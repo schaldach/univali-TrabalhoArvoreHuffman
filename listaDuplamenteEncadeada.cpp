@@ -1,25 +1,28 @@
-#include "../commons.cpp"
+#ifndef LISTADUPLAMENTEENCADEADA_CPP
+#define LISTADUPLAMENTEENCADEADA_CPP
+#include "commons.cpp"
+#include "arvoreBinaria.cpp"
 
-template <typename dLinkedListType>
-struct DLinkedListNode{
-    dLinkedListType info;
+template <typename T>
+struct NodeD{
+    T info;
 
-    DLinkedListNode* previous = nullptr;
-    DLinkedListNode* next = nullptr;
+    NodeD* previous = nullptr;
+    NodeD* next = nullptr;
 };
 
-template <typename dLinkedListType>
+template <typename T>
 struct DLinkedList{
-    private: DLinkedListNode<dLinkedListType>* start = nullptr;
-    private: DLinkedListNode<dLinkedListType>* end = nullptr;
-    private: int length = 0;
+    NodeD<T>* start = nullptr;
+    NodeD<T>* end = nullptr;
+    int length = 0;
 
     //Inserts an information in the end of list.
-    public: bool insert(dLinkedListType inserted){
-        DLinkedListNode<dLinkedListType>* newNode = new DLinkedListNode<dLinkedListType>;
+    public: bool insert(T* inserted){
+        NodeD<T>* newNode = new NodeD<T>;
         if (newNode == nullptr) return false;
 
-        newNode->info = inserted;
+        newNode->info = *inserted;
 
         if (end == nullptr) {
             start = newNode;
@@ -27,20 +30,123 @@ struct DLinkedList{
             length++;
             return true;    
         }else {
-            newNode->previous = end;
-            end->next = newNode;
-            end = newNode;
+            newNode->next = start;
+            start->previous = newNode;
+            start = newNode;
             length++;
             return true;
         }
     }
 
+    bool findCharacter(char c){
+        NodeD<T>* targetNodeD = start;
+        while(targetNodeD != nullptr){
+            if(targetNodeD->info.character == c) return true;
+            targetNodeD = targetNodeD->next;
+        }
+        return false;
+    }
+
+    void updateFreq(char c){
+        NodeD<T>* targetNodeD = start;
+        while(targetNodeD != nullptr){
+            if(targetNodeD->info.character == c){
+                targetNodeD->info.freq++;
+                return;
+            }
+            targetNodeD = targetNodeD->next;
+        }
+    }
+
+    void adicionarNaOrdem(T* v){
+        NodeD<T>* newNodeD = new NodeD<T>;
+        if (newNodeD == nullptr) return;
+        
+        newNodeD->info = *v;
+
+        if(start == nullptr){
+          start = newNodeD;
+          end = newNodeD;
+          return;
+        }
+        if(v->freq < start->info->freq){
+          start->previous = newNodeD;
+          newNodeD->next = start;
+          start = newNodeD;
+          return;
+        }
+        if(v->freq > end->info->freq){
+          end->next = newNodeD;
+          newNodeD->previous = end;
+          end = newNodeD;
+          return;
+        }
+
+        NodeD<T>* targetNodeD = start;
+        while(targetNodeD != nullptr){
+          if(targetNodeD->info->freq >= v->freq){
+            newNodeD->next = targetNodeD;
+            newNodeD->previous = targetNodeD->previous;
+            targetNodeD->previous = newNodeD;
+            newNodeD->previous->next = newNodeD;
+            return;
+          }
+          targetNodeD = targetNodeD->next;
+        }
+      }
+
+bool estaOrdenada(){
+  NodeD<T>* targetNodeD = start;
+  while(targetNodeD != nullptr && targetNodeD->next != nullptr){
+    NodeD<T>* nextNodeD = targetNodeD->next;
+    if(nextNodeD->info.freq < targetNodeD->info.freq){
+      return false;
+    }      
+    targetNodeD = nextNodeD;
+  }
+  return true;
+}
+
+void ordenarLista(){
+  while(!this->estaOrdenada()){
+    NodeD<T>* targetNodeD = start;
+    while(targetNodeD != nullptr && targetNodeD->next != nullptr){
+      NodeD<T>* nextNodeD = targetNodeD->next;
+
+      if(nextNodeD->info.freq < targetNodeD->info.freq){
+        if(targetNodeD->previous != nullptr){
+          targetNodeD->previous->next = nextNodeD;
+        }
+        if(nextNodeD->next != nullptr){
+            nextNodeD->next->previous = targetNodeD;
+        }
+
+        targetNodeD->next = nextNodeD->next;
+        nextNodeD->next = targetNodeD;
+        nextNodeD->previous = targetNodeD->previous;
+        targetNodeD->previous = nextNodeD;
+
+
+        if(targetNodeD == start){
+          start = nextNodeD;
+        }
+        if(nextNodeD == end){
+          end = targetNodeD;
+        }
+      }
+      else{
+        targetNodeD = nextNodeD;
+      }
+    }
+  }
+}
+
     //Remove an information in any position of list.
-    public: bool remove(dLinkedListType removed){
+    public: bool remove(T removed){
         if(start == nullptr) return false;
 
-        DLinkedListNode<dLinkedListType>* currentNode = start->next;
-        DLinkedListNode<dLinkedListType>* previousNode = start;
+        NodeD<T>* currentNode = start->next;
+        NodeD<T>* previousNode = start;
 
         //If the information is the first of list.
         if (previousNode->info == removed) {
@@ -80,7 +186,7 @@ struct DLinkedList{
                 length--;
                 return true;
             }
-            
+
             //If the information is in the midle of list.
             previousNode->next = currentNode->next;
             currentNode->next->previous = previousNode;
@@ -92,19 +198,19 @@ struct DLinkedList{
         return length;
     }
     public: void show(){
-        DLinkedListNode<dLinkedListType>* currentNode = start;
+        NodeD<T>* currentNode = start;
         while(currentNode != nullptr){
             if(currentNode == start) cout << "[";
-            cout << currentNode->info;
+            cout << currentNode->info.character << ":" << currentNode->info.freq;
             cout << (currentNode == end ? "]" : ", ");
             currentNode = currentNode->next;
         }
     }
     bool selfDelete() {
         if (this->start == nullptr) return false;
-        DLinkedListNode<dLinkedListType>* auxNode;
-        auxNode = new DLinkedListNode<dLinkedListType>;
-        DLinkedListNode<dLinkedListType>* currentNode = start;
+        NodeD<T>* auxNode;
+        auxNode = new NodeD<T>;
+        NodeD<T>* currentNode = start;
         while (currentNode != nullptr) {
             auxNode = currentNode->next;
             delete currentNode;
@@ -115,3 +221,4 @@ struct DLinkedList{
         return true;
     }
 };
+#endif

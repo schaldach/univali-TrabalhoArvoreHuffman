@@ -1,40 +1,41 @@
-#include "../commons.cpp"
+#ifndef ARVOREBINARIA_CPP
+#define ARVOREBINARIA_CPP
+#include "commons.cpp"
 
-template <typename binTreeType>
 struct BinTreeNode{
-    binTreeType info;
+    char character;
+    int freq;
 
     BinTreeNode* left = nullptr;
     BinTreeNode* right = nullptr;
 };
 
-template <typename binTreeType>
 struct BinTree{
-    private: BinTreeNode<binTreeType>* root = nullptr;
-    private: int length = 0;
+    public: BinTreeNode* root = nullptr;
+    public: int length = 0;
 
-    public: void preFixedWalk(BinTreeNode<binTreeType>* root){
+    public: void preFixedWalk(BinTreeNode* root){
         if(root == nullptr) return;
-        cout << root->info << "\n";
+        cout << root->character << ":" << root->freq << "\n";
         if(root->left != nullptr) preFixedWalk(root->left);
         if(root->right != nullptr) preFixedWalk(root->right);
     }
 
-    public: void inFixedWalk(BinTreeNode<binTreeType>* root){
+    public: void inFixedWalk(BinTreeNode* root){
         if(root == nullptr) return;
         if(root->left != nullptr) inFixedWalk(root->left);
-        cout << root->info << "\n";
+        cout << root->character << ":" << root->freq << "\n";
         if(root->right != nullptr) inFixedWalk(root->right);
     }
 
-    public: void posFixedWalk(BinTreeNode<binTreeType>* root){
+    public: void posFixedWalk(BinTreeNode* root){
         if(root == nullptr) return;
         if(root->left != nullptr) posFixedWalk(root->left);
         if(root->right != nullptr) posFixedWalk(root->right);
-        cout << root->info << "\n";
+        cout << root->character << ":" << root->freq << "\n";
     }
 
-    public: int countWReturn(BinTreeNode<binTreeType>* root){
+    public: int countWReturn(BinTreeNode* root){
         if(root == nullptr) return 0;
         int count = 1;
         if(root->left != nullptr) count += countWReturn(root->left);
@@ -42,21 +43,27 @@ struct BinTree{
         return count;
     }
 
-    public: void countWVariable(BinTreeNode<binTreeType>* root){
+    public: void countWVariable(BinTreeNode* root){
         if(root == nullptr) return;
         length++;
         if(root->left != nullptr) preFixedWalk(root->left);
         if(root->right != nullptr) preFixedWalk(root->right);
     }
 
-    public: bool insert(BinTreeNode* &root, binTreeType newInfo){
+    public: bool insert(BinTreeNode* &root, int freq, char character){
         if(root == nullptr){
             root = new BinTreeNode;
-            root->info = newInfo;
+            root->freq = freq;
+            root->character = character;
             return true;
         }
-        if(root->info < newInfo) return insert(root->left, newInfo);
-        if(root->info > newInfo) return insert(root->right, newInfo)
+        if(root->freq < freq) return insert(root->left, freq, character);
+        if(root->freq > freq) return insert(root->right, freq, character);
+        return false;
     }
 
+    BinTreeNode* getRoot(){
+        return root;
+    }
 };
+#endif

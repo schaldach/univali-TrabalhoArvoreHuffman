@@ -1,7 +1,6 @@
 #ifndef LISTADUPLAMENTEENCADEADA_CPP
 #define LISTADUPLAMENTEENCADEADA_CPP
 #include "commons.cpp"
-#include "arvoreBinaria.cpp"
 
 template <typename T>
 struct NodeD{

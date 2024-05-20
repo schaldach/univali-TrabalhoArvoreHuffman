@@ -147,7 +147,9 @@ void ordenarLista(){
 
         NodeD<T>* startNode = start;
         start = startNode->next;
-        start->previous = nullptr;
+        if(start != nullptr){
+            start->previous = nullptr;
+        }
         if(startNode == end){
           end = nullptr;
         }

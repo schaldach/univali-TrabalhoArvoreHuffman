@@ -14,6 +14,13 @@ struct BinTree{
     public: BinTreeNode* root = nullptr;
     public: int length = 0;
 
+    void wholeWalk(BinTreeNode* root, string charCode=""){
+        if(root == nullptr) return;
+        if(root->character != '\0') cout << root->character << ":" << charCode << "\n";
+        if(root->left != nullptr) wholeWalk(root->left, charCode+"0");
+        if(root->right != nullptr) wholeWalk(root->right, charCode+"1");
+    }
+
     public: void preFixedWalk(BinTreeNode* root){
         if(root == nullptr) return;
         cout << root->character << ":" << root->freq << "\n";

@@ -3,8 +3,8 @@
 #include "commons.cpp"
 
 struct BinTreeNode{
-    char character;
-    int freq;
+    char character = '\0';
+    int freq = 0;
 
     BinTreeNode* left = nullptr;
     BinTreeNode* right = nullptr;

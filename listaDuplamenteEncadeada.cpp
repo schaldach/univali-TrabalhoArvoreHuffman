@@ -48,19 +48,19 @@ struct DLinkedList{
           length++;
           return true;
         }
-        if(v->freq < start->info.freq){
-          start->previous = newNode;
-          newNode->next = start;
-          start = newNode;
-          length++;
-          return true;
+        if(v->freq <= start->info.freq){
+            start->previous = newNode;
+            newNode->next = start;
+            start = newNode;
+            length++;
+            return true;
         }
-        if(v->freq > end->info.freq){
-          end->next = newNode;
-          newNode->previous = end;
-          end = newNode;
-          length++;
-          return true;
+        if(v->freq >= end->info.freq){
+            end->next = newNode;
+            newNode->previous = end;
+            end = newNode;
+            length++;
+            return true;
         }
 
         NodeD<T>* targetNodeD = start;

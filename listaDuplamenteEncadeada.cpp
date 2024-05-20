@@ -37,112 +37,112 @@ struct DLinkedList{
         }
     }
 
-bool insertInOrder(T *v){
-    NodeD<T>* newNode = new NodeD<T>;
-    if (newNode == nullptr) return false;
-    newNode->info = *v;
+    bool insertInOrder(T *v){
+        NodeD<T>* newNode = new NodeD<T>;
+        if (newNode == nullptr) return false;
+        newNode->info = *v;
 
-    if(start == nullptr){
-      start = newNode;
-      end = newNode;
-      length++;
-      return true;
-    }
-    if(v->freq < start->info.freq){
-      start->previous = newNode;
-      newNode->next = start;
-      start = newNode;
-      length++;
-      return true;
-    }
-    if(v->freq > end->info.freq){
-      end->next = newNode;
-      newNode->previous = end;
-      end = newNode;
-      length++;
-      return true;
-    }
+        if(start == nullptr){
+          start = newNode;
+          end = newNode;
+          length++;
+          return true;
+        }
+        if(v->freq < start->info.freq){
+          start->previous = newNode;
+          newNode->next = start;
+          start = newNode;
+          length++;
+          return true;
+        }
+        if(v->freq > end->info.freq){
+          end->next = newNode;
+          newNode->previous = end;
+          end = newNode;
+          length++;
+          return true;
+        }
 
-    NodeD<T>* targetNodeD = start;
-    while(targetNodeD != nullptr){
-      if(targetNodeD->info.freq > v->freq){
-        newNode->next = targetNodeD;
-        newNode->previous = targetNodeD->previous;
-        targetNodeD->previous = newNode;
-        newNode->previous->next = newNode;
-        length++;
-        return true;
-      }
-      targetNodeD = targetNodeD->next;
-    }
-    return false;
-  }
-
-    bool findCharacter(char c){
         NodeD<T>* targetNodeD = start;
         while(targetNodeD != nullptr){
-            if(targetNodeD->info.character == c) return true;
-            targetNodeD = targetNodeD->next;
+          if(targetNodeD->info.freq > v->freq){
+            newNode->next = targetNodeD;
+            newNode->previous = targetNodeD->previous;
+            targetNodeD->previous = newNode;
+            newNode->previous->next = newNode;
+            length++;
+            return true;
+          }
+          targetNodeD = targetNodeD->next;
         }
         return false;
-    }
-
-    void updateFreq(char c){
-        NodeD<T>* targetNodeD = start;
-        while(targetNodeD != nullptr){
-            if(targetNodeD->info.character == c){
-                targetNodeD->info.freq++;
-                return;
-            }
-            targetNodeD = targetNodeD->next;
-        }
-    }
-
-bool estaOrdenada(){
-  NodeD<T>* targetNodeD = start;
-  while(targetNodeD != nullptr && targetNodeD->next != nullptr){
-    NodeD<T>* nextNodeD = targetNodeD->next;
-    if(nextNodeD->info.freq < targetNodeD->info.freq){
-      return false;
-    }      
-    targetNodeD = nextNodeD;
-  }
-  return true;
-}
-
-void ordenarLista(){
-  while(!this->estaOrdenada()){
-    NodeD<T>* targetNodeD = start;
-    while(targetNodeD != nullptr && targetNodeD->next != nullptr){
-      NodeD<T>* nextNodeD = targetNodeD->next;
-
-      if(nextNodeD->info.freq < targetNodeD->info.freq){
-        if(targetNodeD->previous != nullptr){
-          targetNodeD->previous->next = nextNodeD;
-        }
-        if(nextNodeD->next != nullptr){
-            nextNodeD->next->previous = targetNodeD;
-        }
-
-        targetNodeD->next = nextNodeD->next;
-        nextNodeD->next = targetNodeD;
-        nextNodeD->previous = targetNodeD->previous;
-        targetNodeD->previous = nextNodeD;
-
-
-        if(targetNodeD == start){
-          start = nextNodeD;
-        }
-        if(nextNodeD == end){
-          end = targetNodeD;
-        }
       }
-      else{
+
+      bool findCharacter(char c){
+          NodeD<T>* targetNodeD = start;
+          while(targetNodeD != nullptr){
+              if(targetNodeD->info.character == c) return true;
+              targetNodeD = targetNodeD->next;
+          }
+          return false;
+      }
+
+      void updateFreq(char c){
+          NodeD<T>* targetNodeD = start;
+          while(targetNodeD != nullptr){
+              if(targetNodeD->info.character == c){
+                  targetNodeD->info.freq++;
+                  return;
+              }
+              targetNodeD = targetNodeD->next;
+          }
+      }
+
+    bool estaOrdenada(){
+      NodeD<T>* targetNodeD = start;
+      while(targetNodeD != nullptr && targetNodeD->next != nullptr){
+        NodeD<T>* nextNodeD = targetNodeD->next;
+        if(nextNodeD->info.freq < targetNodeD->info.freq){
+          return false;
+        }      
         targetNodeD = nextNodeD;
       }
+      return true;
     }
-  }
-}
+
+    void ordenarLista(){
+      while(!this->estaOrdenada()){
+        NodeD<T>* targetNodeD = start;
+        while(targetNodeD != nullptr && targetNodeD->next != nullptr){
+          NodeD<T>* nextNodeD = targetNodeD->next;
+
+          if(nextNodeD->info.freq < targetNodeD->info.freq){
+            if(targetNodeD->previous != nullptr){
+              targetNodeD->previous->next = nextNodeD;
+            }
+            if(nextNodeD->next != nullptr){
+                nextNodeD->next->previous = targetNodeD;
+            }
+
+            targetNodeD->next = nextNodeD->next;
+            nextNodeD->next = targetNodeD;
+            nextNodeD->previous = targetNodeD->previous;
+            targetNodeD->previous = nextNodeD;
+
+
+            if(targetNodeD == start){
+              start = nextNodeD;
+            }
+            if(nextNodeD == end){
+              end = targetNodeD;
+            }
+          }
+          else{
+            targetNodeD = nextNodeD;
+          }
+        }
+      }
+    }
 
     void retirar(T &v){
         if(start == nullptr){
@@ -170,7 +170,7 @@ void ordenarLista(){
         NodeD<T>* currentNode = start;
         while(currentNode != nullptr){
             if(currentNode == start) cout << "[";
-            if(currentNode->info.character != '\0') cout << currentNode->info.character;
+            (currentNode->info.character != '\0') ? cout << currentNode->info.character : cout << "merged";
             cout << ":" << currentNode->info.freq;
             cout << (currentNode == end ? "]" : ", ");
             currentNode = currentNode->next;

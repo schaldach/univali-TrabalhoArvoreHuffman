@@ -16,7 +16,7 @@ struct DLinkedList{
     NodeD<T>* end = nullptr;
     int length = 0;
 
-    //Inserts an information in the end of list.
+    //Inserts an information in the start of list.
     public: bool insert(T* inserted){
         NodeD<T>* newNode = new NodeD<T>;
         if (newNode == nullptr) return false;
@@ -37,6 +37,43 @@ struct DLinkedList{
         }
     }
 
+bool insertInOrder(T *v){
+    NodeD<T>* newNode = new NodeD<T>;
+    if (newNode == nullptr) return false;
+    newNode->info = *v;
+
+    if(start == nullptr){
+      start = newNode;
+      end = newNode;
+      return true;
+    }
+    if(v->freq < start->info.freq){
+      start->previous = newNode;
+      newNode->next = start;
+      start = newNode;
+      return true;
+    }
+    if(v->freq > end->info.freq){
+      end->next = newNode;
+      newNode->previous = end;
+      end = newNode;
+      return true;
+    }
+
+    NodeD<T>* targetNodeD = start;
+    while(targetNodeD != nullptr){
+      if(targetNodeD->info.freq >= v->freq){
+        newNode->next = targetNodeD;
+        newNode->previous = targetNodeD->previous;
+        targetNodeD->previous = newNode;
+        newNode->previous->next = newNode;
+        return true;
+      }
+      targetNodeD = targetNodeD->next;
+    }
+    return false;
+  }
+
     bool findCharacter(char c){
         NodeD<T>* targetNodeD = start;
         while(targetNodeD != nullptr){
@@ -56,43 +93,6 @@ struct DLinkedList{
             targetNodeD = targetNodeD->next;
         }
     }
-
-    void adicionarNaOrdem(T* v){
-        NodeD<T>* newNodeD = new NodeD<T>;
-        if (newNodeD == nullptr) return;
-        
-        newNodeD->info = *v;
-
-        if(start == nullptr){
-          start = newNodeD;
-          end = newNodeD;
-          return;
-        }
-        if(v->freq < start->info->freq){
-          start->previous = newNodeD;
-          newNodeD->next = start;
-          start = newNodeD;
-          return;
-        }
-        if(v->freq > end->info->freq){
-          end->next = newNodeD;
-          newNodeD->previous = end;
-          end = newNodeD;
-          return;
-        }
-
-        NodeD<T>* targetNodeD = start;
-        while(targetNodeD != nullptr){
-          if(targetNodeD->info->freq >= v->freq){
-            newNodeD->next = targetNodeD;
-            newNodeD->previous = targetNodeD->previous;
-            targetNodeD->previous = newNodeD;
-            newNodeD->previous->next = newNodeD;
-            return;
-          }
-          targetNodeD = targetNodeD->next;
-        }
-      }
 
 bool estaOrdenada(){
   NodeD<T>* targetNodeD = start;
@@ -140,59 +140,23 @@ void ordenarLista(){
   }
 }
 
-    //Remove an information in any position of list.
-    public: bool remove(T removed){
-        if(start == nullptr) return false;
+    void retirar(T &v){
+        if(start == nullptr){
+          return;
+        }
 
-        NodeD<T>* currentNode = start->next;
-        NodeD<T>* previousNode = start;
+        NodeD<T>* startNode = start;
+        start = startNode->next;
+        start->previous = nullptr;
+        if(startNode == end){
+          end = nullptr;
+        }
 
-        //If the information is the first of list.
-        if (previousNode->info == removed) {
-                if (previousNode == start && previousNode == end) {
-                    delete previousNode;
-                    start = nullptr;
-                    end = nullptr;
-                    length--;
-                    return true;
-                }
-                start = currentNode;
-                start->previous = nullptr;
-                delete previousNode;
-                length--;
-                return true;
-            }
+        v = startNode->info;
+        delete startNode;
+        length--;
+      }
 
-            bool isFound = false;
-
-            while (currentNode != nullptr && !isFound) {
-                if (currentNode->info == removed) {
-                    isFound = true;
-                }
-                else {
-                    previousNode = currentNode;
-                    currentNode = currentNode->next;
-                }
-            }
-
-            if (!isFound) return false;
-
-            //If the information is the last of list.
-            if (currentNode == end) {
-                end = previousNode;
-                end->next = nullptr;
-                delete currentNode;
-                length--;
-                return true;
-            }
-
-            //If the information is in the midle of list.
-            previousNode->next = currentNode->next;
-            currentNode->next->previous = previousNode;
-            delete currentNode;
-            length--;
-            return true;
-    }
     public: int getLength(){
         return length;
     }
@@ -200,7 +164,8 @@ void ordenarLista(){
         NodeD<T>* currentNode = start;
         while(currentNode != nullptr){
             if(currentNode == start) cout << "[";
-            cout << currentNode->info.character << ":" << currentNode->info.freq;
+            if(currentNode->info.character != '\0') cout << currentNode->info.character;
+            cout << ":" << currentNode->info.freq;
             cout << (currentNode == end ? "]" : ", ");
             currentNode = currentNode->next;
         }

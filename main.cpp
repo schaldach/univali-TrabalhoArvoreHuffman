@@ -22,18 +22,21 @@ int main() {
   lista->ordenarLista();
   lista->show();
 
-  // o loop não consegue ser feito mais de uma vez. Vou dar uma olhada melhor ainda
   while(lista->length>1){
-    BinTreeNode v1, v2, newNode;
-    lista->retirar(v1);
-    lista->retirar(v2);
-    newNode.freq = v1.freq + v2.freq;
-    newNode.left = &v1;
-    newNode.right = &v2;
-    lista->insertInOrder(&newNode);
+    BinTreeNode* v1 = new BinTreeNode;
+    BinTreeNode* v2 = new BinTreeNode;
+    BinTreeNode* newNode = new BinTreeNode;
+    lista->retirar(*v1);
+    lista->retirar(*v2);
+    newNode->freq = v1->freq + v2->freq;
+    newNode->left = v1;
+    newNode->right = v2;
+    lista->insertInOrder(newNode);
     lista->show();
+    cout << "\n";
+    tree.root = newNode;
   }
-  // tree.root = &newNode;
 
-  // tree.inFixedWalk(tree.root);
+  tree.wholeWalk(tree.root);
+  
 }

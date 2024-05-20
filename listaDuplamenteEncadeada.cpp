@@ -45,28 +45,32 @@ bool insertInOrder(T *v){
     if(start == nullptr){
       start = newNode;
       end = newNode;
+      length++;
       return true;
     }
     if(v->freq < start->info.freq){
       start->previous = newNode;
       newNode->next = start;
       start = newNode;
+      length++;
       return true;
     }
     if(v->freq > end->info.freq){
       end->next = newNode;
       newNode->previous = end;
       end = newNode;
+      length++;
       return true;
     }
 
     NodeD<T>* targetNodeD = start;
     while(targetNodeD != nullptr){
-      if(targetNodeD->info.freq >= v->freq){
+      if(targetNodeD->info.freq > v->freq){
         newNode->next = targetNodeD;
         newNode->previous = targetNodeD->previous;
         targetNodeD->previous = newNode;
         newNode->previous->next = newNode;
+        length++;
         return true;
       }
       targetNodeD = targetNodeD->next;
